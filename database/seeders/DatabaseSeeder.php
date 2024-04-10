@@ -13,9 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-         DB::table('administrateur')->insert([
-            'login' => 'admin',
-            'password' => password_hash('password',PASSWORD_DEFAULT)
-         ]);
+
+        $this->call(([
+            Profil_Seeder::class,
+            Commentaire_Seeder::class,
+            Administrateur_Seeder::class,
+        ]));
+
+        
     }
 }

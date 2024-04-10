@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Commentaire;
+namespace App\Models;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-Class Commentaire {
+Class Commentaire extends Model{
 
-    private String $contenu;
-    private Int $idAdministrateur;
-    private Int $idProfil;
-    private DateTime $timeCommentaire;
+    use HasFactory;
 
-    public function __construct() {
-        
-    }
+    protected $fillable = ['contenu','idAdministrateur','idProfil','timeCommentaire'];
+
     public function getContenu(): String {
         return $this->contenu;
     }
@@ -32,14 +30,7 @@ Class Commentaire {
     public function setIdProfil(Int $idProfil) {
         $this->idProfil = $idProfil;
     }
-    public function setTimeCommentaire(DateTime $timeCommentaire) {
-        $this->timeCommentaire = $timeCommentaire;
-    }
     public function setContenu(String $contenu) {
         $this->contenu = $contenu;
     }
-
-
-
-
 }

@@ -4,7 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Administrateur;
+use Illuminate\Validation\Rules\Password;
+
 
 class AdministrateurAuth
 {
@@ -13,13 +15,19 @@ class AdministrateurAuth
      */
     public function handle(Request $request,Closure $next)
     {
-        $input = $request->all();
-        if (!empty($input['login']) && !empty($input['password'])) {
-            $password = DB::select('SELECT password FROM administrateur WHERE login = :login', ['login'=> $input['login']]);
-            if (password_verify((string) $input['password'], $password[0]->password)) {  
-                return $next($request);
-            }
-        }
-        abort(403);        
+        $validated = $request->validate([
+            'login' => 'bail|string|required|max:255',
+            'password' => ['bail','string','required','max:255',Password::min(8)],
+        ]);
+
+        $administrateur = Administrateur::where('login', $validated['login'])->first();
+        if($administrateur->IsAuth($validated['password'])) {
+            $request->merge([
+                'idCreateur' => $administrateur->getId()
+            ]);
+
+            return $next($request);
+        }        
+        abort(401);        
     }
 }

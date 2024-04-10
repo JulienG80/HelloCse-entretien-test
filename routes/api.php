@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfilController;
 use  App\Http\Middleware\AdministrateurAuth;
@@ -16,7 +15,15 @@ use  App\Http\Middleware\AdministrateurAuth;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::middleware(AdministrateurAuth::class)->put('profil',[ProfilController::class,'create']);
+//API
+    //Profil
+    Route::prefix('profil')->group(function() {
+        Route::get('/', [ProfilController::class,'getAll']);
+        Route::middleware(AdministrateurAuth::class)->post('/', [ProfilController::class,'getAll']);
+        Route::middleware(AdministrateurAuth::class)->put('/', [ProfilController::class,'create']);
+        Route::middleware(AdministrateurAuth::class)->post('/{id}', [ProfilController::class,'update'])->whereNumber('id');
+        Route::middleware(AdministrateurAuth::class)->delete('/{id}', [ProfilController::class,'delete']);
+        //Commentaire
+        Route::middleware(AdministrateurAuth::class)->post('/{id}/commentaire', [ProfilController::class,'addCommente'])->whereNumber('id');
+    }
+);

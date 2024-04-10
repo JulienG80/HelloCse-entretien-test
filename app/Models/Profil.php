@@ -3,21 +3,31 @@
 namespace App\Models;
 
 use DateTime;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Validation\Rules\ImageFile;
+use Illuminate\Database\Eloquent\Model;
 
 
-class Profil {    
+enum STATUT {
+    case ACTIF;
+    case INACTIF;
+    case EN_ATTENTE;
 
-    private String $nom;
+    public static function random(): string
+    {
+        $arr = array_column(self::cases(), 'name');
 
-    private String $prenom;
-    private Int $idCreateur;
-    private ImageFile $image;
-    private STATUT $statut;
-    private DateTime $time;
-    public function __construct(String $nom, String $prenom) {
-        return true;
+        return $arr[array_rand($arr)];
     }
+}
+
+class Profil extends Model {    
+
+    use HasFactory;
+    public $fillable = ['nom','prenom','idCreateur'];
+
+    protected $hidden = ['statut'];
+   
 
     public function setNom(string $nom) {
         $this->nom = $nom;
@@ -48,17 +58,5 @@ class Profil {
     }
     public function getStatut() {
         return $this->statut;
-    }
-    public function setTime(DateTime $time) {
-        $this->time = $time;
-    }
-    public function getTime() {
-        return $this->time;
-    }        
-}
-
-enum STATUT {
-    case ACTIF;
-    case INACTIF;
-    case EN_ATTENTE;
+    }    
 }
